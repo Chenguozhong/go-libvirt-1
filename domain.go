@@ -172,7 +172,7 @@ func (d *Domain) Active() (bool, error) {
 }
 
 // Persistent returns true if domain persistent
-func (d *Domain) Active() (bool, error) {
+func (d *Domain) Persistent() (bool, error) {
 	obj := d.conn.Object(destObject, d.path)
 	v, err := obj.GetProperty(domainDest + ".Persistent")
 	if err != nil {
@@ -189,4 +189,18 @@ func (d *Domain) Autostart() (bool, error) {
 		return false, err
 	}
 	return v.Value().(bool), nil
+}
+
+// Stats returns domain stats
+func (d *Domain) Stats(stats uint, flags uint) (interface{}, error) {
+	var iface map[string]interface{}
+	obj := d.conn.Object(destObject, d.path)
+	call := obj.Call(domainDest+".GetStats", 0, stats, flags)
+	if call.Err != nil {
+		return "", call.Err
+	}
+	if err := call.Store(&iface); err != nil {
+		return nil, err
+	}
+	return iface, nil
 }
