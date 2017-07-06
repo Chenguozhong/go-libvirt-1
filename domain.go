@@ -160,3 +160,33 @@ func (d *Domain) Undefine() error {
 	}
 	return nil
 }
+
+// Active returns true if domain active
+func (d *Domain) Active() (bool, error) {
+	obj := d.conn.Object(destObject, d.path)
+	v, err := obj.GetProperty(domainDest + ".Active")
+	if err != nil {
+		return false, err
+	}
+	return v.Value().(bool), nil
+}
+
+// Persistent returns true if domain persistent
+func (d *Domain) Active() (bool, error) {
+	obj := d.conn.Object(destObject, d.path)
+	v, err := obj.GetProperty(domainDest + ".Persistent")
+	if err != nil {
+		return false, err
+	}
+	return v.Value().(bool), nil
+}
+
+// Autostart returns true if domain autostarts
+func (d *Domain) Autostart() (bool, error) {
+	obj := d.conn.Object(destObject, d.path)
+	v, err := obj.GetProperty(domainDest + ".Autostart")
+	if err != nil {
+		return false, err
+	}
+	return v.Value().(bool), nil
+}
