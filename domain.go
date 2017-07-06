@@ -16,6 +16,20 @@ func (c *Conn) CreateXML(xmldesc string, flags uint) (*Domain, error) {
 	return &Domain{conn: c.conn, path: iface}, nil
 }
 
+// DefineXML creates new domain using xmldesc and flags
+func (c *Conn) DefineXML(xmldesc string, flags uint) (*Domain, error) {
+	var iface dbus.ObjectPath
+	obj := c.conn.Object(destObject, managerPath)
+	call := obj.Call(managerDest+".DefineXML", 0, xmldesc, flags)
+	if call.Err != nil {
+		return nil, call.Err
+	}
+	if err := call.Store(&iface); err != nil {
+		return nil, call.Err
+	}
+	return &Domain{conn: c.conn, path: iface}, nil
+}
+
 // ListAllDomains lists all domains using flags
 func (c *Conn) ListAllDomains(flags uint) ([]*Domain, error) {
 	var iface []dbus.ObjectPath
