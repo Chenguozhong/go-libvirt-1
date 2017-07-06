@@ -23,30 +23,19 @@ func main() {
 		panic(err)
 	}
 
-	domains, err := conn.ListAllDomains(uint(0))
+	domains, err := conn.ListAllDomains(0)
 	if err != nil {
 		panic(err)
 	}
-	if err := domains[0].Destroy(); err != nil {
+	/*
+		domain, err := conn.CreateXML(domxml, 0)
+		if err != nil {
+			panic(err)
+		}
+	*/
+	stats, err := domains[0].Stats(0, 0)
+	if err != nil {
 		panic(err)
 	}
-	for _, domain := range domains {
-		id, err := domain.ID()
-		if err != nil {
-			panic(err)
-		}
-		name, err := domain.Name()
-		if err != nil {
-			panic(err)
-		}
-		state, err := domain.State()
-		if err != nil {
-			panic(err)
-		}
-		uuid, err := domain.UUID()
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("%d\t%s\t%s\t\t\t%s\n", id, uuid, name, state)
-	}
+	fmt.Printf("%#+v\n", stats)
 }
