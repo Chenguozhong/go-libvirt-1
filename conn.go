@@ -2,18 +2,12 @@ package libvirt
 
 import "github.com/godbus/dbus"
 
-const (
-	destObject  = "org.libvirt"
-	managerDest = "org.libvirt.Manager"
-	managerPath = "/org/libvirt/Manager"
-	domainDest  = "org.libvirt.domain"
-	domainPath  = "/org/libvirt/domain"
-)
-
+// Conn libvirt connection
 type Conn struct {
 	conn *dbus.Conn
 }
 
+// NewSessionConn creates session conn used for unprivileged access
 func NewSessionConn() (*Conn, error) {
 	conn, err := dbus.SessionBus()
 	if err != nil {
@@ -22,6 +16,7 @@ func NewSessionConn() (*Conn, error) {
 	return &Conn{conn: conn}, nil
 }
 
+// NewSystemConn creates system conn for privileged access
 func NewSystemConn() (*Conn, error) {
 	conn, err := dbus.SystemBus()
 	if err != nil {
@@ -30,6 +25,7 @@ func NewSystemConn() (*Conn, error) {
 	return &Conn{conn: conn}, nil
 }
 
+// Close closes conn
 func (c *Conn) Close() error {
 	return c.conn.Close()
 }

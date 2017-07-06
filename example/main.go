@@ -9,7 +9,7 @@ import (
 var (
 	domxml = string(`
     <domain type="kvm">
-      <name>foo</name>
+      <name>fii</name>
       <memory>1024</memory>
       <os><type>hvm</type></os>
     </domain>
@@ -27,34 +27,26 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%#+v\n", domains)
-	/*
-		obj := conn.Object("org.libvirt", "/org/libvirt/Manager")
-		call := obj.Call("org.libvirt.Manager.ListDomains", 0, uint(0))
-		if call.Err != nil {
-			panic(call.Err)
-		}
-		var domains interface{}
-		if err := call.Store(&domains); err != nil {
+	if err := domains[0].Destroy(); err != nil {
+		panic(err)
+	}
+	for _, domain := range domains {
+		id, err := domain.ID()
+		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%#+v\n", domains)
-		call = obj.Call("org.libvirt.Manager.CreateXML", 0, domxml, uint(0))
-		if call.Err != nil {
-			panic(call.Err)
-		}
-		var res interface{}
-		if err := call.Store(&res); err != nil {
+		name, err := domain.Name()
+		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%#+v\n", res)
-		call = obj.Call("org.libvirt.Manager.ListDomains", 0, uint(0))
-		if call.Err != nil {
-			panic(call.Err)
-		}
-		if err := call.Store(&domains); err != nil {
+		state, err := domain.State()
+		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%#+v\n", domains)
-	*/
+		uuid, err := domain.UUID()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%d\t%s\t%s\t\t\t%s\n", id, uuid, name, state)
+	}
 }
